@@ -488,7 +488,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5 text-emerald-200" />
+              
               <span>আইডি কার্ড সংরক্ষণ ও তালিকাভুক্ত করুন</span>
             </>
           )}

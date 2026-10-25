@@ -194,26 +194,25 @@ export const IdCardPreview: React.FC<IdCardPreviewProps> = ({
           </span>
         </div>
 
-        {/* Dynamic QR Code: Positioned strictly inside the user marked white area with proper bottom and left margins */}
+        {/* Dynamic QR Code: Full fill inside the white box area */}
         <div
-          className="absolute z-10 flex items-center justify-center overflow-hidden"
+          className="absolute z-10 flex items-center justify-center overflow-hidden bg-white"
           style={{
-            left: '87.7%',
-            top: '91.4%',
-            width: '11.4%',
-            height: '7.6%',
-            transform: 'translate(-50%, -50%)',
+            left: '81.5%',
+            top: '86.8%',
+            width: '15.0%',
+            height: '9.6%',
           }}
         >
           {qrCodeUrl ? (
             <img
               src={qrCodeUrl}
               alt="Participant Verification QR"
-              className="w-full h-full object-contain mix-blend-multiply"
+              className="w-full h-full object-fill block"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-white">
-              <QrCode className="w-5 h-5 text-emerald-800 animate-pulse" />
+              <QrCode className="w-6 h-6 text-emerald-800 animate-pulse" />
             </div>
           )}
         </div>

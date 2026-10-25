@@ -41,8 +41,8 @@ export async function generateQrDataUrl(participant: Participant): Promise<strin
   try {
     return await QRCode.toDataURL(payload, {
       errorCorrectionLevel: 'M',
-      margin: 1,
-      width: 320,
+      margin: 0,
+      width: 400,
       color: {
         dark: '#052e16', // Deep forest emerald green/black
         light: '#ffffff',

@@ -87,12 +87,8 @@ export async function renderCardToCanvas(participant: Participant): Promise<HTML
     const qrDataUrl = await generateQrDataUrl(participant);
     if (qrDataUrl) {
       const qrImg = await loadImage(qrDataUrl);
-      // User marked white box in footer: centered at x = 898px (87.7%), y = 1404px (91.4%)
-      // Sized at 116px so it leaves clean margins all around and never touches footer text
-      const qrSize = 116;
-      const qrX = 898 - Math.round(qrSize / 2);
-      const qrY = 1404 - Math.round(qrSize / 2);
-      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+      // Full fill the white box area in footer: x=835..989 (w=154px), y=1333..1481 (h=148px)
+      ctx.drawImage(qrImg, 835, 1333, 154, 148);
     }
   } catch (err) {
     console.error('Failed to draw QR code on canvas:', err);
