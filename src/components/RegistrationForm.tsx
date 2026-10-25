@@ -240,7 +240,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         ) : (
           <div className="flex flex-col sm:flex-row items-center gap-4">
             {/* Thumbnail Preview */}
-            <div className="relative group w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-500/80 shadow-md flex-shrink-0 bg-slate-800 flex items-center justify-center">
+            <div className="relative group w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-500/80 shadow-md flex-shrink-0 bg-slate-800 flex items-center justify-center text-center p-1">
               {currentParticipant.photoUrl ? (
                 <img
                   src={currentParticipant.photoUrl}
@@ -248,7 +248,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-10 h-10 text-slate-500" />
+                <div className="flex flex-col items-center justify-center text-slate-400">
+                  <User className="w-5 h-5 text-slate-400 mb-0.5" />
+                  <span className="text-[10px] text-emerald-400 font-semibold leading-tight">
+                    Set image here
+                  </span>
+                </div>
               )}
             </div>
 
@@ -289,6 +294,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   <ImageIcon className="w-3.5 h-3.5" />
                   <span>নমুনা ছবি লোড</span>
                 </button>
+
+                {currentParticipant.photoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('photoUrl', '')}
+                    className="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800/50 text-[11px] font-medium text-rose-300 transition cursor-pointer"
+                    title="ছবি রিমুভ করে ডিফল্ট রাখুন"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>ছবি রিমুভ</span>
+                  </button>
+                )}
               </div>
 
               {/* Graceful Camera Error Message Banner */}
@@ -337,7 +354,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             required
             value={currentParticipant.name}
             onChange={e => handleInputChange('name', e.target.value)}
-            placeholder="যেমন: মোঃ নাজমুল আহসান"
+            placeholder="নাম লিখুন"
             className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border ${
               nameError
                 ? 'border-rose-500 ring-2 ring-rose-500/40 text-rose-100'
@@ -364,7 +381,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           required
           value={currentParticipant.school}
           onChange={e => handleInputChange('school', e.target.value)}
-          placeholder="যেমন: রংপুর জিলা স্কুল"
+          placeholder="স্কুলের নাম লিখুন"
           className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm font-medium transition"
         />
       </div>
@@ -380,7 +397,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           required
           value={currentParticipant.address}
           onChange={e => handleInputChange('address', e.target.value)}
-          placeholder="যেমন: রংপুর সদর, রংপুর"
+          placeholder="ঠিকানা লিখুন"
           className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm font-medium transition"
         />
       </div>
@@ -469,7 +486,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             type="tel"
             value={currentParticipant.phone || ''}
             onChange={e => handleInputChange('phone', e.target.value)}
-            placeholder="01XXXXXXXXX"
+            placeholder="মোবাইল নাম্বার দিন"
             className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm font-medium transition"
           />
         </div>

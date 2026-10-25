@@ -53,6 +53,15 @@ export async function renderCardToCanvas(participant: Participant): Promise<HTML
     } catch (e) {
       console.warn('Failed to draw user photo on canvas:', e);
     }
+  } else {
+    // Draw "Set image here" inside circle when no photo is uploaded
+    ctx.save();
+    ctx.fillStyle = '#064e3b';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 34px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('Set image here', 250, 774);
+    ctx.restore();
   }
 
   // 3. Render Dynamic Text Fields
@@ -68,12 +77,12 @@ export async function renderCardToCanvas(participant: Participant): Promise<HTML
 
   // Row 2: School (স্কুল)
   ctx.font = '600 39px "Hind Siliguri", "Anek Bangla", sans-serif';
-  const schoolText = participant.school || 'স্কুলের নাম';
+  const schoolText = participant.school || 'স্কুলের নাম লিখুন';
   ctx.fillText(truncateText(ctx, schoolText, 420), 560, 759);
 
   // Row 3: Address (ঠিকানা)
   ctx.font = '600 38px "Hind Siliguri", "Anek Bangla", sans-serif';
-  const addressText = participant.address || 'ঠিকানা';
+  const addressText = participant.address || 'ঠিকানা লিখুন';
   ctx.fillText(truncateText(ctx, addressText, 420), 560, 862);
 
   // Row 4: Registration No (নিবন্ধন নং)

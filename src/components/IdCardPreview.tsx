@@ -113,14 +113,16 @@ export const IdCardPreview: React.FC<IdCardPreviewProps> = ({
               alt={participant.name}
               className="w-full h-full object-cover"
               onError={e => {
-                // fallback to default avatar
-                (e.target as HTMLImageElement).src = '/sample-avatar.jpg';
+                // hide on broken image link
+                (e.target as HTMLImageElement).style.display = 'none';
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 bg-emerald-50">
-              <UserCheck className="w-12 h-12 text-emerald-600/60" />
-              <span className="text-[10px] text-emerald-800 font-medium">ছবি যুক্ত করুন</span>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-emerald-50/95 text-center px-2 select-none">
+              <UserCheck className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-600/80 mb-1" />
+              <span className="text-xs sm:text-sm text-emerald-950 font-bold tracking-tight">
+                Set image here
+              </span>
             </div>
           )}
         </div>
@@ -139,7 +141,7 @@ export const IdCardPreview: React.FC<IdCardPreviewProps> = ({
             className="font-bold text-slate-900 text-sm sm:text-base md:text-lg tracking-tight truncate leading-tight w-full drop-shadow-[0_0.5px_0.5px_rgba(255,255,255,0.8)]"
             title={participant.name}
           >
-            {participant.name || 'নাম প্রদান করুন'}
+            {participant.name || 'নাম লিখুন'}
           </span>
         </div>
 

@@ -84,10 +84,10 @@ export default function App() {
       id: `reg-${Date.now()}`,
       regNo: nextSuggestedRegNo,
       name: '',
-      school: 'রংপুর জিলা স্কুল',
-      address: 'রংপুর',
+      school: '',
+      address: '',
       relation: 'নিজে',
-      photoUrl: '/sample-avatar.jpg',
+      photoUrl: '',
       createdAt: new Date().toISOString(),
     };
     setCurrentParticipant(newEntry);
