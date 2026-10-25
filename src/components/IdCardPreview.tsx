@@ -194,15 +194,15 @@ export const IdCardPreview: React.FC<IdCardPreviewProps> = ({
           </span>
         </div>
 
-        {/* Dynamic QR Code: Inside the white blank cutout box at bottom right */}
-        {/* Notice: RELATION is safely embedded inside the QR payload, NOT printed as text! */}
+        {/* Dynamic QR Code: Positioned strictly inside the user marked white area with proper bottom and left margins */}
         <div
-          className="absolute z-10 flex items-center justify-center p-1 overflow-hidden"
+          className="absolute z-10 flex items-center justify-center overflow-hidden"
           style={{
-            left: '73.2%',
-            top: '79.6%',
-            width: '25.4%',
-            height: '19.3%',
+            left: '87.7%',
+            top: '91.4%',
+            width: '11.4%',
+            height: '7.6%',
+            transform: 'translate(-50%, -50%)',
           }}
         >
           {qrCodeUrl ? (
@@ -213,7 +213,7 @@ export const IdCardPreview: React.FC<IdCardPreviewProps> = ({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-white">
-              <QrCode className="w-10 h-10 text-emerald-800 animate-pulse" />
+              <QrCode className="w-5 h-5 text-emerald-800 animate-pulse" />
             </div>
           )}
         </div>

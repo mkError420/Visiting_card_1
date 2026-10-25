@@ -87,11 +87,11 @@ export async function renderCardToCanvas(participant: Participant): Promise<HTML
     const qrDataUrl = await generateQrDataUrl(participant);
     if (qrDataUrl) {
       const qrImg = await loadImage(qrDataUrl);
-      // The white box is at x=750..1009 (w=260), y=1223..1519 (h=297)
-      // Center inside the white box with padding
-      const qrSize = 224;
-      const qrX = 750 + (260 - qrSize) / 2;
-      const qrY = 1223 + (297 - qrSize) / 2 + 10;
+      // User marked white box in footer: centered at x = 898px (87.7%), y = 1404px (91.4%)
+      // Sized at 116px so it leaves clean margins all around and never touches footer text
+      const qrSize = 116;
+      const qrX = 898 - Math.round(qrSize / 2);
+      const qrY = 1404 - Math.round(qrSize / 2);
       ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
     }
   } catch (err) {

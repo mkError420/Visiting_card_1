@@ -1,6 +1,8 @@
 {
   "name": "SSC 88 Batch Reunion - বাহের ডাক",
   "description": "Event Registration and ID Card Generation System for এসএসসি ৮৮ ব্যাচের বন্ধুদের মিলনমেলা - বাহের ডাক with instant QR code and high-resolution print ready badges.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "camera"
+  ],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

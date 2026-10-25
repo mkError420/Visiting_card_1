@@ -38,6 +38,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRelationFilter, setSelectedRelationFilter] = useState<string>('all');
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Participant | null>(null);
 
   const filteredParticipants = useMemo(() => {
     return participants.filter(p => {
@@ -345,9 +346,7 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
                     type="button"
                     onClick={e => {
                       e.stopPropagation();
-                      if (confirm(`আপনি কি "${participant.name}" এর নিবন্ধন মুছে ফেলতে চান?`)) {
-                        onDelete(participant.id);
-                      }
+                      setDeleteTarget(participant);
                     }}
                     className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-700 text-slate-300 hover:text-white transition cursor-pointer"
                     title="মুছে ফেলুন"
@@ -360,6 +359,47 @@ export const AttendeeList: React.FC<AttendeeListProps> = ({
           })
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white">নিবন্ধন মুছে ফেলবেন?</h4>
+                <p className="text-xs text-slate-400">এই কাজটি ফিরিয়ে আনা যাবে না</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              আপনি কি নিশ্চিতভাবে <strong className="text-white">"{deleteTarget.name}"</strong> (নিবন্ধন নং: {toBengaliNumber(deleteTarget.regNo)}) এর তথ্য তালিকা থেকে মুছে ফেলতে চান?
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer transition"
+              >
+                বাতিল
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onDelete(deleteTarget.id);
+                  setDeleteTarget(null);
+                }}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-900/30 cursor-pointer transition"
+              >
+                হ্যাঁ, মুছে ফেলুন
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

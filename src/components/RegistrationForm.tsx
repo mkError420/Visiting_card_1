@@ -16,6 +16,7 @@ import {
   Image as ImageIcon,
   X,
   FlipHorizontal,
+  AlertCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -38,6 +39,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState(false);
   const [isSavedSuccess, setIsSavedSuccess] = useState(false);
 
   // Stop camera when unmounting
@@ -50,6 +53,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   }, [cameraStream]);
 
   const handleInputChange = (field: keyof Participant, value: any) => {
+    if (field === 'name' && nameError) {
+      setNameError(false);
+    }
     onChange({
       ...currentParticipant,
       [field]: value,
@@ -63,12 +69,26 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       reader.onload = event => {
         const result = event.target?.result as string;
         handleInputChange('photoUrl', result);
+        setCameraError(null);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const startCamera = async () => {
+    setCameraError(null);
+
+    // Stop any existing tracks
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(t => t.stop());
+      setCameraStream(null);
+    }
+
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      setCameraError('আপনার ব্রাউজার বা ডিভাইসে সরাসরি ক্যামেরা ব্যবহারের সুবিধা নেই। অনুগ্রহ করে গ্যালারি থেকে ছবি আপলোড করুন।');
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: 'user' },
@@ -77,11 +97,24 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       setIsCameraActive(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        videoRef.current.play().catch(() => {});
       }
-    } catch (err) {
-      console.error('Camera access error:', err);
-      alert('ক্যামেরা চালু করা সম্ভব হয়নি। অনুগ্রহ করে ছবি আপলোড অপশনটি ব্যবহার করুন।');
+    } catch (err: any) {
+      console.warn('Camera access handled gracefully:', err?.name || err?.message);
+      setIsCameraActive(false);
+      if (
+        err?.name === 'NotAllowedError' ||
+        err?.name === 'PermissionDeniedError' ||
+        (err?.message && String(err.message).toLowerCase().includes('permission denied'))
+      ) {
+        setCameraError(
+          'ক্যামেরা ব্যবহারের অনুমতি পাওয়া যায়নি (Permission Denied)। অনুগ্রহ করে ব্রাউজার অ্যাড্রেস বার থেকে ক্যামেরা এলাও (Allow) করুন, অথবা নিচে থেকে ছবি আপলোড করুন।'
+        );
+      } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+        setCameraError('কোনো ক্যামেরা ডিভাইস পাওয়া যায়নি। অনুগ্রহ করে ছবি আপলোড অপশনটি ব্যবহার করুন।');
+      } else {
+        setCameraError('ক্যামেরা চালু করতে সমস্যা হয়েছে। অনুগ্রহ করে গ্যালারি থেকে ছবি আপলোড করুন।');
+      }
     }
   };
 
@@ -115,7 +148,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentParticipant.name.trim()) {
-      alert('দয়া করে অংশগ্রহণকারীর নাম লিখুন।');
+      setNameError(true);
       return;
     }
 
@@ -257,6 +290,33 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   <span>নমুনা ছবি লোড</span>
                 </button>
               </div>
+
+              {/* Graceful Camera Error Message Banner */}
+              {cameraError && (
+                <div className="mt-2.5 p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5 animate-in fade-in duration-200">
+                  <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 space-y-1.5">
+                    <p className="font-medium text-amber-200 leading-relaxed">{cameraError}</p>
+                    <div className="flex items-center gap-2 pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 text-[11px] font-semibold transition cursor-pointer"
+                      >
+                        ফাইল সিলেক্ট করুন
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCameraError(null)}
+                        className="text-[11px] text-slate-400 hover:text-slate-200 cursor-pointer"
+                      >
+                        বন্ধ করুন
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <p className="text-[11px] text-slate-400">
                 পাসপোর্ট বা পোর্ট্রেট সাইজ ছবি সবচেয়ে সুন্দরভাবে ফ্রেমের মধ্যে প্রদর্শিত হয়।
               </p>
@@ -278,9 +338,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             value={currentParticipant.name}
             onChange={e => handleInputChange('name', e.target.value)}
             placeholder="যেমন: মোঃ নাজমুল আহসান"
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm font-medium transition"
+            className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border ${
+              nameError
+                ? 'border-rose-500 ring-2 ring-rose-500/40 text-rose-100'
+                : 'border-slate-700 text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent'
+            } placeholder-slate-500 focus:outline-none text-sm font-medium transition`}
           />
         </div>
+        {nameError && (
+          <p className="text-[11px] text-rose-400 font-medium flex items-center gap-1 mt-1">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>দয়া করে অংশগ্রহণকারীর নাম পূরণ করুন।</span>
+          </p>
+        )}
       </div>
 
       {/* Field: School (স্কুল) */}
